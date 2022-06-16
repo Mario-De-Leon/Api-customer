@@ -7,7 +7,7 @@ const options = {}
 if (config.isProd) {
   options.connectionString = config.dbUrlProduct;
   options.ssl = {
-    rejectUnauthorized: false
+    rejectUnauthorized : false
   }
 } else {
   options.connectionString =  config.dbUrlDev
