@@ -1,16 +1,18 @@
 const { Pool } = require('pg');
 
 const { config } = require('./../config/config');
-let URI = ''
+
+const options = {}
+
 if (config.isProd) {
-  URI = config.dbUrlProduct;
+  options.connectionString = config.dbUrlProduct;
+  options.ssl = {
+    rejectUnauthorized: false
+  }
 } else {
-  URI = config.dbUrlDev
+  options.connectionString =  config.dbUrlDev
 }
 
-
-
-
-const pool = new Pool({ connectionString: URI });
+const pool = new Pool(options);
 
 module.exports = pool;

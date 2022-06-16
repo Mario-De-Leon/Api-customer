@@ -8,6 +8,13 @@ const options = {
   logging: config.isProd ? false : true,
 }
 
+if (config.isProd){
+    options.dialectOption = {
+    ssl :{
+      rejectUnauthorized: false
+    }
+  }
+}
 const sequelize = new Sequelize(config.isProd ? config.dbUrlProduct : config.dbUrlDev, options);
 
 setupModels(sequelize)
