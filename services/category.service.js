@@ -1,25 +1,31 @@
 const boom = require('@hapi/boom');
 
-const pool = require('../libs/postgres.pool')
+const {models} = require('./../libs/sequelize')
+
 
 class CategoryService {
 
   constructor(){
-    this.pool = pool;
-    this.pool.on('error', (err) => console.error(err));
+
   }
   async create(data) {
-    return data;
+    const newCategory =  await models.Category.create(data)
+    return newCategory;
   }
 
   async find() {
-    const query = 'SELECT * FROM tasks';
-    const rta = await this.pool.query(query)
-    return rta.rows;
+    const categories = await models.Category.findAll()
+    return categories;
   }
 
   async findOne(id) {
-    return { id };
+    const category = await models.Category.findByPk(id, {
+      include: ['products']
+    })
+    if (category == null){
+      throw boom.notFound("No found")
+    }
+      return category;
   }
 
   async update(id, changes) {

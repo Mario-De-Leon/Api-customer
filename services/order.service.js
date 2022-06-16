@@ -1,24 +1,36 @@
 const boom = require('@hapi/boom');
 
-const pool = require('../libs/postgres.pool')
+const {models} = require('./../libs/sequelize')
+
 class OrderService {
 
   constructor(){
-    this.pool = pool;
-    this.pool.on('error', (err) => console.error(err));
   }
   async create(data) {
-    return data;
+    const newOrder = await models.Order.create(data);
+    return newOrder;
   }
 
+  async addItem(data) {
+    const newItem = await models.OrderProduct.create(data);
+    return newItem;
+  }
   async find() {
-    const query = 'SELECT * FROM tasks';
-    const rta = await this.pool.query(query)
-    return rta.rows;
+    const products = await models.Order.findAll();
+    return products
   }
 
   async findOne(id) {
-    return { id };
+    const newOrder = await models.Order.findByPk(id,{
+      include: [
+        {
+          association: 'customer',
+          include: ['user']
+        },
+        'items'
+      ]
+    });
+    return  newOrder
   }
 
   async update(id, changes) {

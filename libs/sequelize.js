@@ -3,14 +3,13 @@ const {Sequelize} = require('sequelize');
 const { config } = require('./../config/config');
 const setupModels = require('../db/models/index');
 
-const USER = encodeURIComponent(config.dbUser);
-const PASSWORD = encodeURIComponent(config.dbPassword);
-const URI = `mysql://${USER}:${PASSWORD}@${config.dbHost}:${config.dbPort}/${config.dbName}`;
+const options = {
+  dialect : config.isProd  ? 'postgres' : 'mysql',
+  logging: config.isProd ? false : true,
+}
 
-const sequelize = new Sequelize(URI,{
-  dialect : 'mysql',
-  logging: true,
-});
+const sequelize = new Sequelize(config.isProd ? config.dbUrlProduct : config.dbUrlDev, options);
+
 setupModels(sequelize)
 
 module.exports = sequelize
